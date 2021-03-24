@@ -1,0 +1,42 @@
+/* ################################
+   Modal
+*/
+
+#modal-wrapper {
+  display: none;
+  position: fixed;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-box {
+  background: white;
+  margin: 3em auto;
+  padding: 10px 1em;
+  max-width: 450px;
+  box-shadow: 5px 5px 5px #888;
+}
+
+.modal-box .modal-title {
+  padding: 10px 0;
+  font-size: 120%;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-box .modal-body {
+  padding: 15px 0;
+}
+
+.modal-box .modal-buttons {
+  padding: 10px 0;
+  text-align: center;
+}
+
+.modal-box .modal-buttons > button {
+  margin: 0 .3em;
+}

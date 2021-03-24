@@ -1,0 +1,136 @@
+/* ################################
+   Layout
+*/
+
+html, body { height: 100%; }
+
+#header-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2rem;
+}
+
+#list-wrapper {
+  position: fixed;
+  left: 0;
+  top: 2rem;
+  width: 100%;
+  bottom: 0;
+  overflow: scroll;
+}
+
+#copySrc {
+  position: fixed;
+  top: -100px;
+}
+
+/* ################################
+   Header
+*/
+
+#header-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background: #eee;
+  padding: 0 8px;
+}
+
+#header-wrapper > div {
+  flex: 0 0 auto;
+  font-size: 18px;
+  height: 2rem;
+  line-height: 2rem;
+  margin: 0 8px;
+}
+
+#header-wrapper > #header-logo a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #65b;
+}
+
+#header-wrapper > #header-search-wrapper {
+  flex: 1 0 20px;
+}
+
+#header-search {
+  width: 100%;
+  font-size: 16px;
+  margin: 0 .5em;
+}
+
+#header-right {
+  min-width: 5em;
+}
+
+#header-message {
+  text-align: right;
+  font-weight: bold;
+  color: #A00;
+}
+
+/* ################################
+   Table
+*/
+
+#notes-table {
+  width: 100%;
+}
+
+#notes-table th {
+  position: sticky;
+  top: 0;
+}
+
+#notes-table tr:nth-child(even) {
+  background-color: #F5FCFF;
+}
+
+#notes-table tr:hover {
+  background-color: #dee;
+}
+
+#notes-table tr.dir {
+  cursor: pointer;
+}
+
+#notes-table th {
+  padding: .8em .5em;
+  background-color: #79b;
+  color: white;
+  text-align: left;
+  font-weight: bold;
+}
+#notes-table th:nth-child(1) { width: 2em; }
+#notes-table th:nth-child(2) { width: 12em; }
+#notes-table th:nth-child(3) { width: 6em; }
+#notes-table th:nth-child(5) { width: 20em; }
+#notes-table th:nth-child(6) { width: 4em; }
+
+#notes-table td {
+  padding: .5em;
+}
+#notes-table td.dirname {
+  font-weight: bold;
+}
+#notes-table td.title {
+  font-weight: bold;
+  color: #22C;
+  cursor: pointer;
+}
+#notes-table td.none {
+  color: #bbb;
+}
+
+#notes-table tr.dir span.open {
+  display: none;
+}
+#notes-table tr.dir.open span.close {
+  display: none;
+}
+#notes-table tr.dir.open span.open {
+  display: inline;
+}

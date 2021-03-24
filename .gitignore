@@ -1,0 +1,8 @@
+*~
+*.pyc
+*.pyo
+*.bak
+*.swp
+__pycache__
+/data/
+/a9online/

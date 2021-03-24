@@ -1,0 +1,121 @@
+/* ################################
+   Layout
+*/
+
+html, body { height: 100%; }
+
+#header-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2rem;
+}
+
+#editor-wrapper {
+  position: fixed;
+  left: 0;
+  top: 2rem;
+  width: 50%;
+  bottom: 0;
+}
+
+#content-wrapper {
+  position: fixed;
+  right: 0;
+  top: 2rem;
+  width: 50%;
+  bottom: 0;
+  border-left: 1px solid #ddd;
+  overflow: scroll;
+}
+
+#editor-wrapper > div {
+  height: 100%;
+  cursor: text;
+}
+
+#content-wrapper {
+  padding-bottom: 30rem;
+}
+
+/* ################################
+   Header
+*/
+
+#header-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background: #eee;
+  padding: 0 8px;
+}
+
+#header-wrapper > div {
+  flex: 0 0 auto;
+  font-size: 18px;
+  height: 2rem;
+  line-height: 2rem;
+  margin: 0 8px;
+}
+
+#header-wrapper > #header-logo a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #65b;
+}
+
+#header-wrapper > #header-title {
+  flex: 1 0 20px;
+  font-weight: bold;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#header-message {
+  display: inline-block;
+  margin: 0 10px;
+  font-weight: bold;
+  color: #A00;
+}
+
+#header-right > button {
+  vertical-align: middle;
+}
+
+#header-wrapper .none {
+  color: #bbb;
+}
+
+/* ################################
+   Editor
+*/
+
+.CodeMirror {
+  font-family: monospace;
+  line-height: 1.2;
+}
+
+.CodeMirror-lines {
+  padding-bottom: 30rem;
+}
+
+/* ################################
+   Modals
+*/
+
+.modal-body input[type=text] {
+  display: inline-block;
+  width: 100%;
+  padding: .5em 1em;
+  margin: .4em 0 1em;
+}
+
+/* ################################
+   Preview
+*/
+
+#content-wrapper #content div.spoiler {
+  display: block;
+}
