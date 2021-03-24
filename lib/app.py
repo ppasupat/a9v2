@@ -24,6 +24,24 @@ def init_directories():
   if not os.path.isdir(data_dir):
     os.makedirs(data_dir)
     print(f'Created {data_dir}')
+  export_dir = os.path.join(BASEDIR, 'a9online')
+  if not os.path.isdir(export_dir):
+    os.makedirs(export_dir)
+    print(f'Created {export_dir}')
+    # Copy the static files
+    os.mkdir(os.path.join(export_dir, 'static'))
+    for filename in [
+        'favicon-pad.png',
+        'reset.css',
+        'viewer-style.css',
+        'content-style.css',
+        'print-style.css',
+        'render-math.js',
+        'spoiler.js',
+    ]:
+      shutil.copy(
+          os.path.join('static', filename),
+          os.path.join(export_dir, 'static', filename))
 
 
 HTML_ESCAPES = {
