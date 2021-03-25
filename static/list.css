@@ -85,12 +85,8 @@ html, body { height: 100%; }
   top: 0;
 }
 
-#notes-table tr:nth-child(even) {
-  background-color: #F5FCFF;
-}
-
 #notes-table tr:hover {
-  background-color: #dee;
+  background-color: #F9F9F9;
 }
 
 #notes-table tr.dir {
@@ -118,8 +114,11 @@ html, body { height: 100%; }
 }
 #notes-table td.title {
   font-weight: bold;
-  color: #22C;
+  color: #0645ad;
   cursor: pointer;
+}
+#notes-table td.title:hover {
+  text-decoration: underline;
 }
 #notes-table td.none {
   color: #bbb;
