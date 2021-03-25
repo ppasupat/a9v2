@@ -19,6 +19,7 @@ html, body { height: 100%; }
   width: 100%;
   bottom: 0;
   overflow: scroll;
+  background-color: #EEE;
 }
 
 #copySrc {
@@ -86,7 +87,7 @@ html, body { height: 100%; }
 }
 
 #notes-table tr:hover {
-  background-color: #F9F9F9;
+  background-color: #DDD;
 }
 
 #notes-table tr.dir {
