@@ -143,12 +143,12 @@ $(function () {
   }
 
   function searchCite() {
-    $.get('/api/cite', {url: $('#cite-query').val()}, function (results) {
+    $.get('/api/cite', {q: $('#cite-query').val()}, function (results) {
       console.log(results);
-      results = [results];
-      results.forEach(function (result) {
+      $('#cite-candidates').empty();
+      results.candidates.forEach(function (candidate) {
         $('<div class="cite-candidate">').appendTo('#cite-candidates')
-          .text(result);
+          .text(JSON.stringify(candidate));
       });
     });
   }

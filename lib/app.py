@@ -9,7 +9,7 @@ import time
 from .bottle import (
     Bottle, HTTPError,
     abort, redirect, request, response, static_file)
-from .cite_grabber import grab_citation
+from .cite_grabber import grab_citations
 
 
 app = Bottle()
@@ -245,9 +245,9 @@ def export_note():
 
 @app.get('/api/cite')
 def search_citation():
-  url = request.query.url
-  citation = grab_citation(url)
-  return '<cite>' + citation + '</cite>'
+  query = request.query.q
+  citations = grab_citations(query)
+  return {'candidates': citations}
 
 
 ################################
