@@ -6,7 +6,14 @@ let MODAL = (function () {
   _MODAL.createModal = function (title, body, buttons) {
     let modalWrapper = $('#modal-wrapper');
     if (!modalWrapper.length) {
-      modalWrapper = $('<div id="modal-wrapper">').appendTo('body');
+      modalWrapper = $('<div id="modal-wrapper">')
+        .appendTo('body')
+        .keyup(function (e) {
+          if (e.key === "Escape") {
+            _MODAL.hideModals();
+            e.preventDefault();
+          }
+        });
     }
     let modalBox = $('<div class="modal-box">').appendTo(modalWrapper);
     if (title !== undefined) {
@@ -21,13 +28,18 @@ let MODAL = (function () {
   _MODAL.showModal = function (modalBox) {
     $('.modal-box').hide();
     modalBox.show();
-    $('#modal-wrapper').show();
+    $('#modal-wrapper').addClass('show');
+  }
+
+  // Check if a model is open
+  _MODAL.hasModal = function () {
+    return $('#modal-wrapper').hasClass('show');
   }
 
   // Hide all modals.
   _MODAL.hideModals = function () {
     $('.modal-box').hide();
-    $('#modal-wrapper').hide();
+    $('#modal-wrapper').removeClass('show');
   }
 
   return _MODAL;

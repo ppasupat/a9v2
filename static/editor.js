@@ -34,6 +34,8 @@ $(function () {
     $('#header-message').finish().text(message).show().delay(1000).fadeOut('slow');
   }
 
+  // Error
+
   let errorModal = MODAL.createModal(
     'Error', '',
     $('<button type=button>').text('OK').click(MODAL.hideModals));
@@ -49,6 +51,8 @@ $(function () {
     MODAL.showModal(errorModal);
   }
 
+  // Rename
+
   let renameModal = MODAL.createModal(
     'Rename',
     [
@@ -60,8 +64,8 @@ $(function () {
     [
       $('<button type="button" id="rename-ok">').text('OK').click(function () {
         setTitle(
-          renameModal.find('#rename-index').val(),
-          renameModal.find('#rename-title').val());
+          $('#rename-index').val(),
+          $('#rename-title').val());
         saveNote();
         MODAL.hideModals();
       }),
@@ -70,20 +74,20 @@ $(function () {
     ]);
 
   function showRenameModal() {
-    renameModal.find('#rename-index').val($('#header-index').data('value'));
-    renameModal.find('#rename-title').val($('#header-title').data('value'));
     MODAL.showModal(renameModal);
+    $('#rename-index').val($('#header-index').data('value')).focus();
+    $('#rename-title').val($('#header-title').data('value'));
   }
   
   $('#button-rename').click(showRenameModal);
 
   function keyupRenameModal(e) {
     if (e.key === "Enter") {
-      renameModal.find('#rename-ok').click();
-    } else if (e.key === "Escape") {
-      renameModal.find('#rename-cancel').click();
+      $('#rename-ok').click();
     }
   }
+
+  // Export
 
   let exportModal = MODAL.createModal(
     'Export',
@@ -96,8 +100,8 @@ $(function () {
     [
       $('<button type="button" id="export-ok">').text('OK').click(function () {
         exportNote(
-          exportModal.find('#export-path').val(),
-          exportModal.find('#export-title').val());
+          $('#export-path').val(),
+          $('#export-title').val());
         MODAL.hideModals();
       }),
       $('<button type="button" id="export-cancel">').text('Cancel')
@@ -105,18 +109,58 @@ $(function () {
     ]);
 
   function showExportModal() {
-    exportModal.find('#export-path').val(notePath.replace(/\.md$/, '.html'));
-    exportModal.find('#export-title').val($('#header-title').data('value'));
     MODAL.showModal(exportModal);
+    $('#export-path').val(notePath.replace(/\.md$/, '.html')).focus();
+    $('#export-title').val($('#header-title').data('value'));
   }
   
   $('#button-export').click(showExportModal);
 
   function keyupExportModel(e) {
     if (e.key === "Enter") {
-      exportModal.find('#export-ok').click();
-    } else if (e.key === "Escape") {
-      exportModal.find('#export-cancel').click();
+      $('#export-ok').click();
+    }
+  }
+
+  // Cite
+
+  let citeModal = MODAL.createModal(
+    'Cite',
+    [
+      $('<label for="cite-query">').text('Publication title or arXiv URL'),
+      $('<input type="text" id="cite-query">').keyup(keyupCiteModal),
+      $('<div id="cite-candidates">'),
+    ],
+    [
+      $('<button type="button" id="cite-cancel">').text('Cancel')
+        .click(MODAL.hideModals),
+    ]);
+
+  function showCiteModal() {
+    MODAL.showModal(citeModal);
+    $('#cite-query').val('').focus();
+    $('#cite-candidates').empty();
+  }
+
+  function searchCite() {
+    $.get('/api/cite', {url: $('#cite-query').val()}, function (results) {
+      console.log(results);
+      results = [results];
+      results.forEach(function (result) {
+        $('<div class="cite-candidate">').appendTo('#cite-candidates')
+          .text(result);
+      });
+    });
+  }
+
+  $('#cite-candidates').on('dblclick', '.cite-candidate', function (e) {
+    myCodeMirror.replaceSelection($(this).text());
+    MODAL.hideModals();
+  });
+  
+  function keyupCiteModal(e) {
+    if (e.key === "Enter") {
+      searchCite();
     }
   }
 
@@ -167,6 +211,7 @@ $(function () {
           'Tab': 'indentMore',
           'Shift-Tab': 'indentLess',
           'Ctrl-A': alchemy,
+          'Shift-Ctrl-A': showCiteModal,
         },
         showCursorWhenSelecting: true,
         autofocus: true,
@@ -175,28 +220,16 @@ $(function () {
   }
 
   function alchemy(cm) {
-    function _display (success, result) {
-      if (success) {
-        cm.replaceSelection(result);
-      } else {
-        cm.openNotification(escapeHtml(result), {duration: 2000});
-      }
-    }
-
     cm.openDialog(
       'Alchemy: <input type=text value="' + escapeHtml(cm.getSelection()) + '">',
       function (ingredients) {
-        // converted[0] is true, false, or "defer"
+        // converted[0] is true or false
         // converted[1] is the actual result
         let converted = ALCHEMY_KIT.convert(ingredients);
-        if (converted[0] === "defer") {
-          converted[1].done(function (response) {
-            _display(true, response);
-          }).fail(function (jqXHR, textStatus, errorThrown) {
-            _display(false, textStatus + ': ' + errorThrown);
-          });
+        if (converted[0]) {
+          cm.replaceSelection(converted[1]);
         } else {
-          _display(converted[0], converted[1]);
+          cm.openNotification(escapeHtml(converted[1]), {duration: 2000});
         }
       });
   }

@@ -55,18 +55,11 @@ let ALCHEMY_KIT = (function () {
   // Interface
 
   _ALCHEMY_KIT.convert = function (text) {
-    // Check the MACROS
     if (MACROS[text] !== undefined) {
       return [true, MACROS[text]];
     }
-    // Check citation
-    if (text.startsWith('http://') || text.startsWith('https://')) {
-      let jqxhr = $.get('/api/cite', {url: text});
-      return ['defer', jqxhr];
-    }
     return [false, 'Unknown ingredients: ' + text];
   };
-
 
   return _ALCHEMY_KIT;
 })();

@@ -13,6 +13,10 @@
   background: rgba(0, 0, 0, 0.4);
 }
 
+#modal-wrapper.show {
+  display: block;
+}
+
 .modal-box {
   background: white;
   margin: 3em auto;
