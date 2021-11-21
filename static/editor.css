@@ -112,6 +112,29 @@ html, body { height: 100%; }
   margin: .4em 0 1em;
 }
 
+#cite-candidates-wrapper {
+  height: 20em;
+  overflow-y: scroll;
+}
+
+#cite-candidates {
+  border: 2px solid #aaa;
+  background: #f2f2f2;
+}
+
+#cite-candidates td {
+  padding: 6px 8px;
+}
+
+#cite-candidates tr.top-row {
+  border-top: 2px solid #aaa;
+}
+
+#cite-preview {
+  font-family: monospace;
+  margin-top: 1em;
+}
+
 /* ################################
    Preview
 */

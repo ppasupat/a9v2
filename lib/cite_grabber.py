@@ -9,6 +9,9 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 
+TIMEOUT = 10  # timeout in seconds
+
+
 def clean(x):
   x = re.sub(r'\s+', ' ', x).strip()
   x = re.sub(r'\.$', '', x)
@@ -23,7 +26,7 @@ def dblp_search(title):
   api_url = ('http://dblp.dagstuhl.de/search/publ/api?format=json&q='
       + urllib.parse.quote_plus(title))
   print('Grabbing DBLP information from', api_url, file=sys.stderr)
-  data = json.load(urllib.request.urlopen(api_url))
+  data = json.load(urllib.request.urlopen(api_url, timeout=TIMEOUT))
   hits = data['result']['hits']
   candidates = []
   for entry in hits.get('hit', []):
@@ -38,12 +41,14 @@ def dblp_search(title):
     else:
       candidate['authors'] = []
     candidate['venue'] = clean(info.get('venue', ''))
+    if candidate['venue'] == 'CoRR':
+      candidate['venue'] = 'arXiv'
     candidate['year'] = clean(info.get('year', ''))
     candidate['title'] = clean(info.get('title', ''))
     candidate['url'] = resolve_dblp_url(clean(info.get('url', '')))
     candidate['similarity'] = difflib.SequenceMatcher(
         None, title.lower(), candidate['title'].lower()).ratio()
-    candidate['is_arxiv'] = (candidate['venue'] == 'CoRR')
+    candidate['is_arxiv'] = (candidate['venue'] == 'arXiv')
     candidates.append(candidate)
   candidates.sort(key=lambda x: (-x['similarity'], x['is_arxiv']))
   return candidates
@@ -65,7 +70,7 @@ def resolve_dblp_url(dblp_url, fetch=False):
     else:
       xml_url = dblp_url
     print('Grabbing DBLP information from', xml_url, file=sys.stderr)
-    data = urllib.request.urlopen(xml_url)
+    data = urllib.request.urlopen(xml_url, timeout=TIMEOUT)
     entry = ET.parse(data).getroot()[0]
     ee = entry.find('ee')
     if ee is not None:
@@ -83,11 +88,11 @@ def arxiv_fetch(url):
   paper_id = url.split('/')[-1].replace('.pdf', '')
   api_url = 'http://export.arxiv.org/api/query?id_list=' + paper_id
   print('Grabbing arxiv information from', api_url, file=sys.stderr)
-  data = urllib.request.urlopen(api_url)
+  data = urllib.request.urlopen(api_url, timeout=TIMEOUT)
   entry = ET.parse(data).getroot().find('atom:entry', NS)
   candidate = {
       'authors': [],
-      'venue': '',
+      'venue': 'arXiv',
       'year': '',
       'title': '',
       'url': url,
@@ -130,7 +135,7 @@ def grab_citations(query):
       # Try cross-search with DBLP
       try:
         candidates = dblp_search(arxiv_candidate['title'])
-        return candidates
+        return [arxiv_candidate] + candidates
       except Exception as e:
         print('Error:', e, file=sys.stderr)
         traceback.print_exc()

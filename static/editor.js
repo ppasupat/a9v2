@@ -124,44 +124,97 @@ $(function () {
 
   // Cite
 
+  // Prevent stale AJAX results
+  let latestCiteTimestamp = null;
+  let citePreviewKvs = {};
+
   let citeModal = MODAL.createModal(
     'Cite',
     [
       $('<label for="cite-query">').text('Publication title or arXiv URL'),
-      $('<input type="text" id="cite-query">').keyup(keyupCiteModal),
-      $('<div id="cite-candidates">'),
+      $('<input type="text" id="cite-query">').keyup(function (e) {
+        if (e.key === "Enter") {
+          searchCite();
+        }
+      }),
+      $('<div id="cite-candidates-wrapper">').append($('<table id="cite-candidates">')),
+      $('<div id="cite-preview">'),
     ],
     [
+      $('<button type="button" id="cite-ok">').text('OK').click(function () {
+        myCodeMirror.replaceSelection($('#cite-preview').text());
+        MODAL.hideModals();
+      }),
       $('<button type="button" id="cite-cancel">').text('Cancel')
         .click(MODAL.hideModals),
     ]);
 
   function showCiteModal() {
     MODAL.showModal(citeModal);
-    $('#cite-query').val('').focus();
+    $('#cite-query').val('').prop('disabled', false).focus();
     $('#cite-candidates').empty();
+    citePreviewKvs = {};
+    renderCitePreview();
   }
 
   function searchCite() {
-    $.get('/api/cite', {q: $('#cite-query').val()}, function (results) {
-      console.log(results);
+    let query = $('#cite-query').prop('disabled', true).val(), timestamp = Date.now();
+    latestCiteTimestamp = timestamp;
+    $.get('/api/cite', {q: query}, function (results) {
+      if (latestCiteTimestamp !== timestamp) return;
+      $('#cite-query').prop('disabled', false);
       $('#cite-candidates').empty();
       results.candidates.forEach(function (candidate) {
-        $('<div class="cite-candidate">').appendTo('#cite-candidates')
-          .text(JSON.stringify(candidate));
+        addCiteCandidateRow('author', candidate.authors).addClass('top-row');
+        addCiteCandidateRow('author', formatCiteAuthors(candidate.authors));
+        addCiteCandidateRow('venue', candidate.venue);
+        addCiteCandidateRow('year', candidate.year);
+        addCiteCandidateRow('title', candidate.title);
+        addCiteCandidateRow('url', candidate.url);
       });
     });
   }
 
-  $('#cite-candidates').on('dblclick', '.cite-candidate', function (e) {
-    myCodeMirror.replaceSelection($(this).text());
-    MODAL.hideModals();
-  });
-  
-  function keyupCiteModal(e) {
-    if (e.key === "Enter") {
-      searchCite();
+  function formatCiteAuthors(authors) {
+    authors = authors.map(function (x) {
+      let tokens = x.trim().split(' ');
+      while (tokens.length > 0) {
+        let name = tokens.pop();
+        if (!(/^[0-9]+$/.test(name))) return name;
+      }
+      return '???';
+    });
+    if (authors.length == 1) {
+      return authors[0];
+    } else if (authors.length == 2) {
+      return authors[0] + ' and ' + authors[1];
+    } else {
+      return authors[0] + ' et al.';
     }
+  }
+
+  function addCiteCandidateRow(key, value) {
+    let row = $('<tr>').appendTo('#cite-candidates');
+    $('<td>').appendTo(row).append(
+      $('<button type=button>').text(key).click(function () {
+        citePreviewKvs[key] = value;
+        renderCitePreview();
+      }));
+    if (key === 'url') {
+      $('<td>').appendTo(row).append($('<a>').text(value).attr('href', value));
+    } else {
+      $('<td>').appendTo(row).text(value);
+    }
+    return row;
+  }
+
+  function renderCitePreview() {
+    $('#cite-preview').text(
+      '<cite>(' + (citePreviewKvs.author || '???')
+      + ', ' + (citePreviewKvs.venue || '???')
+      + ' ' + (citePreviewKvs.year || '???')
+      + ') [' + (citePreviewKvs.title || '???')
+      + '](' + (citePreviewKvs.url || '???') + ')</cite>');
   }
 
   // ################################################
