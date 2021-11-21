@@ -112,6 +112,11 @@ html, body { height: 100%; }
   margin: .4em 0 1em;
 }
 
+#cite-throbber {
+  margin-left: .5em;
+  height: .8em;
+}
+
 #cite-candidates-wrapper {
   height: 20em;
   overflow-y: scroll;

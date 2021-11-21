@@ -131,7 +131,8 @@ $(function () {
   let citeModal = MODAL.createModal(
     'Cite',
     [
-      $('<label for="cite-query">').text('Publication title or arXiv URL'),
+      $('<label for="cite-query">').text('Publication title or arXiv URL')
+        .append('<img id="cite-throbber" src="/static/ajax-loader.gif">'),
       $('<input type="text" id="cite-query">').keyup(function (e) {
         if (e.key === "Enter") {
           searchCite();
@@ -152,6 +153,7 @@ $(function () {
   function showCiteModal() {
     MODAL.showModal(citeModal);
     $('#cite-query').val('').prop('disabled', false).focus();
+    $('#cite-throbber').hide();
     $('#cite-candidates').empty();
     citePreviewKvs = {};
     renderCitePreview();
@@ -160,9 +162,11 @@ $(function () {
   function searchCite() {
     let query = $('#cite-query').prop('disabled', true).val(), timestamp = Date.now();
     latestCiteTimestamp = timestamp;
+    $('#cite-throbber').show();
     $.get('/api/cite', {q: query}, function (results) {
       if (latestCiteTimestamp !== timestamp) return;
       $('#cite-query').prop('disabled', false);
+      $('#cite-throbber').hide();
       $('#cite-candidates').empty();
       results.candidates.forEach(function (candidate) {
         addCiteCandidateRow('author', candidate.authors).addClass('top-row');

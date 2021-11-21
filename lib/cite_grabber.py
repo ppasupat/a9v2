@@ -45,37 +45,13 @@ def dblp_search(title):
       candidate['venue'] = 'arXiv'
     candidate['year'] = clean(info.get('year', ''))
     candidate['title'] = clean(info.get('title', ''))
-    candidate['url'] = resolve_dblp_url(clean(info.get('url', '')))
+    candidate['url'] = clean(info.get('ee', ''))
     candidate['similarity'] = difflib.SequenceMatcher(
         None, title.lower(), candidate['title'].lower()).ratio()
     candidate['is_arxiv'] = (candidate['venue'] == 'arXiv')
     candidates.append(candidate)
   candidates.sort(key=lambda x: (-x['similarity'], x['is_arxiv']))
   return candidates
-
-
-def resolve_dblp_url(dblp_url, fetch=False):
-  """Convert the URL dblp.org/rec/... to an actual URL."""
-  # For arXiv, we can reconstruct the URL.
-  arxiv_match = re.match(
-      r'https://dblp.org/rec/(?:xml/)?journals/corr/abs-(\d+)-(\d+)',
-      dblp_url)
-  if arxiv_match:
-    return 'http://arxiv.org/abs/{}.{}'.format(*arxiv_match.groups())
-  # Fetch the actual URL if requested.
-  if fetch:
-    # For other journals
-    if '/xml/' not in dblp_url:
-      xml_url = dblp_url.replace('/rec/', '/rec/xml/')
-    else:
-      xml_url = dblp_url
-    print('Grabbing DBLP information from', xml_url, file=sys.stderr)
-    data = urllib.request.urlopen(xml_url, timeout=TIMEOUT)
-    entry = ET.parse(data).getroot()[0]
-    ee = entry.find('ee')
-    if ee is not None:
-      return ee.text
-  return dblp_url
 
 
 ################################
