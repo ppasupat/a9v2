@@ -1,8 +1,7 @@
 window.addEventListener('load', function () {
   var spoilerBoxes = document.getElementsByClassName('spoiler');
-  for (var i = 0; i < spoilerBoxes.length; i++) {
-    var spolierBox = spoilerBoxes[i],
-        wrapper = document.createElement("div"),
+  [].forEach.call(spoilerBoxes, function (spolierBox) {
+    var wrapper = document.createElement("div"),
         toggleWrapper = document.createElement("div"),
         toggleButton = document.createElement("button");
     spolierBox.parentElement.insertBefore(wrapper, spolierBox);
@@ -15,5 +14,5 @@ window.addEventListener('load', function () {
       spolierBox.style.display = 
         spolierBox.style.display == 'block' ? 'none' : 'block';
     }
-  }
+  });
 });

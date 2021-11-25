@@ -92,6 +92,10 @@
   text-align: center;
   margin: 1em;
 }
+#content div.spoiler div.spoiler {
+  margin-left: 1em;
+  margin-right: 1em;
+}
 
 /*================================================================
   Texts */
