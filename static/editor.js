@@ -350,7 +350,7 @@ $(function () {
       let href = $(x).attr('href');
       if (href.startsWith('@/')) {
         $(x).attr('href', resolveLocalHref(href, isExport));
-      } else {
+      } else if (!href.startsWith('#')) {
         $(x).attr('target', '_blank');
       }
     });
