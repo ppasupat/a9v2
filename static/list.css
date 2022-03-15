@@ -79,6 +79,7 @@ html, body { height: 100%; }
 
 #notes-table {
   width: 100%;
+  color: #333;
 }
 
 #notes-table th {
