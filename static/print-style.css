@@ -1,4 +1,4 @@
-body, #cover {
+body, #wrapper, #cover {
   background-color: white;
 }
 
@@ -16,14 +16,14 @@ body, #cover {
   height: auto !important;
   border: none;
   overflow: auto;
-  text-overflow: auto;
   white-space: normal;
   margin: 0;
   padding: 0;
 }
 
-body, #wrapper,
+body, #wrapper, #content-frame,
 #content-wrapper, #content-name-wrapper, #content-lower-wrapper {
+  max-width: none;
   width: 100%;
 }
 
@@ -50,4 +50,8 @@ body, #wrapper,
 #content img {
   max-width: 500px;
   page-break-inside: avoid;
+}
+
+#content-time {
+  display: none;
 }
